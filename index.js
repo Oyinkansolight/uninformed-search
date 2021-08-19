@@ -67,6 +67,10 @@ tree.insert(170);
 tree.insert(15);
 tree.insert(1);
 
+		  // 9
+	// 4		20
+// 1	6	  15	170
+
 // console.log(tree.breadthFirstSearch(170));
 // console.log(tree.lookup(15));
 // console.log(tree.depthFirstSearchInOrder());
@@ -74,14 +78,18 @@ tree.insert(1);
 // console.log(tree.depthLimitedSearch(15, 1));
 
 const test = () => {
-	let depth = 1;
+	let limit = 0;
 	while (1) {
-		let status = tree.iterativeDeepeningSearch(15, 1, depth);
-		if (status === 1) {
+		let status = tree.iterativeDeepeningSearch(15, limit, 0);
+		// console.log(limit);
+		// console.log(status);
+		if (status) {
 			return status;
 			// break;
-		} else depth++;
+		} else limit++;
 	}
+	// return tree.iterativeDeepeningSearch(15, 1, depth);
+
 };
 
 console.log(test());
