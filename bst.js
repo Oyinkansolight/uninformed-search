@@ -137,7 +137,7 @@ export default class BinarySearchTree {
 		let stack = [],
 			status = 0,
 			visited = {};
-
+		// NEED TO RETURN TRAVERSED  PATH 
 		stack.push(this.root);
 
 		if (depth < limit) {
