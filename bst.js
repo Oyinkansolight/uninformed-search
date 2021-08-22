@@ -213,10 +213,6 @@ export default class BinarySearchTree {
 		return "Not found!";
 	}
 
-	biDirectionalSearch(goal) {
-		//not done
-	}
-
 	uniformCostSearch(goal) {
 		//not done
 	}
