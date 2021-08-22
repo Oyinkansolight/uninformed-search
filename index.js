@@ -12,7 +12,7 @@ tree.insert(170);
 tree.insert(15);
 tree.insert(1);
 
-// 9
+	  // 9
 // 4		20
 // 1	6	  15	170
 
