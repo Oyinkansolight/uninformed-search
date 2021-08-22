@@ -134,10 +134,19 @@ export default class BinarySearchTree {
 	}
 
 	iterativeDeepeningSearch(goal, limit, depth) {
+		while (1) {
+			let status = this._iterativeDeepeningSearch(goal, limit, depth);
+			if (status) {
+				return status;
+			} else limit++;
+		}
+	}
+
+	_iterativeDeepeningSearch(goal, limit, depth) {
 		let stack = [],
 			status = 0,
 			visited = {};
-		// NEED TO RETURN TRAVERSED  PATH 
+		// NEED TO RETURN TRAVERSED  PATH
 		stack.push(this.root);
 
 		if (depth < limit) {

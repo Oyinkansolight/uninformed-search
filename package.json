@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@antv/g6": "^4.3.5",
     "datastructures-js": "^10.1.1"
   }
 }
