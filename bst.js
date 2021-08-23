@@ -8,6 +8,17 @@ import {
 export default class BinarySearchTree {
 	constructor() {
 		this.root = null;
+		this.nodes = [];
+		this.edges = [];
+		this.data = {
+			nodes: this.nodes,
+			edges: this.edges,
+		};
+
+		this.left_x = 300,
+		this.left_y = 200,
+		this.right_x = 500,
+		this.right_y = 200;
 	}
 
 	insert(value) {
@@ -15,25 +26,83 @@ export default class BinarySearchTree {
 
 		if (!this.root) {
 			this.root = newNode;
+			this.nodes.push({
+				id: `node ${newNode.value}`,
+				x: 400,
+				y: 100,
+				color: "#40a9ff",
+				label: `${newNode.value}`,
+				labelCfg: {
+					position: "top",
+				},
+			});
 			return;
 		} else {
 			let currentNode = this.root;
 
-			while (true) {
+			while (true) { 
+				this.left_y >= 400 ? this.left_y -= 100 : ''
+				this.left_y >= 450 ? this.left_y -= 100 : ''
+				
 				if (value < currentNode.value) {
 					//GO LEFT
 					if (!currentNode.left) {
 						currentNode.left = newNode;
+						currentNode.children.push(newNode);
+						currentNode.left.depth = currentNode.depth + 1;
+						this.nodes.push({
+							id: `node ${newNode.value}`,
+							x: this.left_x,
+							y: this.left_y,
+							depth: currentNode.depth + 1,
+							status: 0,
+							color: "#40a9ff",
+							label: `${newNode.value}`,
+							labelCfg: {
+								position: "left",
+								offset: 10,
+							},
+						});
+
+						this.left_x -= 50;
+						this.left_y += 100;
+
+						this.edges.push({
+							source: `node ${currentNode.value}`,
+							target: `node ${newNode.value}`,
+						});
 						return this;
 					}
 					currentNode = currentNode.left;
+					
 				} else {
 					//GO RIGHT
 					if (!currentNode.right) {
 						currentNode.right = newNode;
+						currentNode.children.push(newNode);
+						currentNode.right.depth = currentNode.depth + 1;
+						this.nodes.push({
+							id: `node ${newNode.value}`,
+							x: this.right_x,
+							y: this.right_y,
+							color: "#40a9ff",
+							label: `${newNode.value}`,
+							labelCfg: {
+								position: "right",
+								offset: 10,
+							},
+						});
+						this.right_x += 50;
+						this.right_y += 100;
+
+						this.edges.push({
+							source: `node ${currentNode.value}`,
+							target: `node ${newNode.value}`,
+						});
 						return this;
 					}
 					currentNode = currentNode.right;
+					// console.log(this.left_y, this.right_y);
 				}
 			}
 		}
