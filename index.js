@@ -1,18 +1,16 @@
 import BinarySearchTree from "./bst.js";
 
-
-
 const tree = new BinarySearchTree();
 tree.insert(9);
-tree.insert(4);
-tree.insert(20);
-tree.insert(170);
-tree.insert(6);
-tree.insert(1);
-tree.insert(15);
+tree.insert(4, 7);
+tree.insert(20, 20);
+tree.insert(170, 50);
+tree.insert(6, 1);
+tree.insert(1, 60);
+tree.insert(15, 400);
 
-         // 9
-    // 4		20
+// 9
+// 4		20
 // 1	6	  15	170
 
 // console.log(tree);

@@ -55,7 +55,7 @@
 					desiredSize: new go.Size(50, 50),
 				},
 				new go.Binding("desiredSize", "size"),
-				new go.Binding("fill", "fill")
+				new go.Binding("fill", "fill"),
 			),
 			$(
 				go.TextBlock,
@@ -78,26 +78,33 @@
 
 		myDiagram.layout = $(go.TreeLayout, { angle: 90, layerSpacing: 35 });
 
+
+        window.custom = false;
+		
 		// This presumes the object to be animated is a label within a Link
-		go.AnimationManager.defineAnimationEffect(
-			"fraction",
-			function (
-				obj,
-				startValue,
-				endValue,
-				easing,
-				currentTime,
-				duration,
-				animation
-			) {
-				obj.segmentFraction = easing(
-					currentTime,
+		myDiagram.animationManager.initialAnimationStyle =
+			go.AnimationManager.defineAnimationEffect(
+				"fraction",
+				function (
+					obj,
 					startValue,
-					endValue - startValue,
-					duration
-				);
-			}
-		);
+					endValue,
+					easing,
+					currentTime,
+					duration,
+					animation
+				) {
+					obj.segmentFraction = easing(
+						currentTime,
+						startValue,
+						endValue - startValue,
+						duration
+					);
+				}
+			);
+
+		myDiagram.model = go.Model.fromJSON(myDiagram.model.toJSON());
+
 
 		function animateColorAndFraction() {
 			// create one Animation for each link, so that they have independent durations
@@ -116,5 +123,7 @@
 				animation.start();
 			});
 		}
+
+		
 	</script>
 </html>

@@ -14,16 +14,11 @@ export default class BinarySearchTree {
 			nodes: this.nodes,
 			edges: this.edges,
 		};
-
-		this.left_x = 300,
-		this.left_y = 200,
-		this.right_x = 500,
-		this.right_y = 200;
 	}
 
-	insert(value) {
+	insert(value, weight = 0) {
 		const newNode = new Node(value);
-
+		let parent_distance = 0
 		if (!this.root) {
 			this.root = newNode;
 			this.nodes.push({
@@ -32,23 +27,40 @@ export default class BinarySearchTree {
 				y: 100,
 				color: "#40a9ff",
 				label: `${newNode.value}`,
+				depth: 0,
 				labelCfg: {
 					position: "top",
 				},
+				children: [],
 			});
 			return;
 		} else {
 			let currentNode = this.root;
 
-			while (true) { 
-				this.left_y >= 400 ? this.left_y -= 100 : ''
-				this.left_y >= 450 ? this.left_y -= 100 : ''
-				
+			while (true) {
+				parent_distance = currentNode.distance_to_root;
 				if (value < currentNode.value) {
 					//GO LEFT
 					if (!currentNode.left) {
 						currentNode.left = newNode;
-						currentNode.children.push(newNode);
+						currentNode.weights.push(weight);
+						currentNode.distance_to_root = parent_distance + weight;
+						//UNSHIFT IS USED INSTEAD OF PUSH TO MAKE SURE THAT THE LEFT-NODE IS ALWAYS THE FIRST CHILD IF PRESENT
+						currentNode.children.unshift(newNode);
+						this.nodes[0].children = {
+							id: `node ${newNode.value}`,
+							x: this.left_x,
+							y: this.left_y,
+							depth: currentNode.depth + 1,
+							status: 0,
+							color: "#40a9ff",
+							label: `${newNode.value}`,
+							labelCfg: {
+								position: "left",
+								offset: 10,
+							},
+							children: [],
+						}
 						currentNode.left.depth = currentNode.depth + 1;
 						this.nodes.push({
 							id: `node ${newNode.value}`,
@@ -62,24 +74,31 @@ export default class BinarySearchTree {
 								position: "left",
 								offset: 10,
 							},
+							children: [],
 						});
-
-						this.left_x -= 50;
-						this.left_y += 100;
 
 						this.edges.push({
+							weight: weight,
 							source: `node ${currentNode.value}`,
 							target: `node ${newNode.value}`,
+							type: 'polyline',
+							style: {
+								fill: 'steelblue',
+							  },
 						});
+
+						
+
 						return this;
 					}
 					currentNode = currentNode.left;
-					
 				} else {
 					//GO RIGHT
 					if (!currentNode.right) {
 						currentNode.right = newNode;
 						currentNode.children.push(newNode);
+						currentNode.weights.push(weight);
+						currentNode.distance_to_root = parent_distance + weight;
 						currentNode.right.depth = currentNode.depth + 1;
 						this.nodes.push({
 							id: `node ${newNode.value}`,
@@ -92,13 +111,15 @@ export default class BinarySearchTree {
 								offset: 10,
 							},
 						});
-						this.right_x += 50;
-						this.right_y += 100;
 
 						this.edges.push({
+							weight: weight,
 							source: `node ${currentNode.value}`,
 							target: `node ${newNode.value}`,
 						});
+
+						
+
 						return this;
 					}
 					currentNode = currentNode.right;
@@ -283,6 +304,39 @@ export default class BinarySearchTree {
 	}
 
 	uniformCostSearch(goal) {
-		//not done
+		const queue = new PriorityQueueMin();
+		queue.enqueue(this.root);
+		while(true){
+			if (queue.arr.length === 0) return null;
+			e = queue.dequeue();
+			if(e.value === goal){
+				return e;
+			}
+			e.children.forEach(element => {
+				queue.enqueue(element);
+			});
+		}
+	}
+}
+
+
+class PriorityQueueMin{
+	constructor(){
+		this.arr = [];
+	}
+
+	enqueue(v){
+		for (let i = 0; i < this.arr.length; i++) {
+			const value = this.arr[i].distance_to_root;
+			if (v.distance_to_root < value){
+				this.arr.splice(i, 0, v);
+				return;
+			}
+		}
+		this.arr.push(v);
+	}
+	
+	dequeue(){
+		return this.arr.splice(0,1)[0];
 	}
 }
