@@ -194,7 +194,8 @@ export default class BinarySearchTree {
 
 	depthLimitedSearch(goal, limit) {
 		let stack = [],
-			depth = 0;
+			depth = 0,
+			allNodes = [];
 		stack.push(this.root);
 
 		//May need to change the output for the GUI
@@ -202,9 +203,11 @@ export default class BinarySearchTree {
 			while (stack.length) {
 				for (let i = 0; i < stack.length; i++) {
 					let node = stack.pop();
+					allNodes.push(node.value);
 
 					if (node.value === goal) {
-						return node;
+						return allNodes;
+						// return node;
 					}
 
 					if (node.right) {
@@ -312,11 +315,16 @@ export default class BinarySearchTree {
 	uniformCostSearch(goal) {
 		const queue = new PriorityQueueMin();
 		queue.enqueue(this.root);
+		let nodes = [this.root.value]
 		while(true){
+			let e;
 			if (queue.arr.length === 0) return null;
 			e = queue.dequeue();
+			nodes.push(e.value)
+
 			if(e.value === goal){
-				return e;
+				return nodes;
+				// return e;
 			}
 			e.children.forEach(element => {
 				queue.enqueue(element);

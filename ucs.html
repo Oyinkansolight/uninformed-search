@@ -10,6 +10,14 @@
 	</head>
 
 	<body>
+		<div style="margin: 2rem auto; text-align: center">
+			<h1 style="margin-bottom: 2rem;">Uniform Cost Search</h1>
+			<h2>Enter Goal Node</h2>
+			<!-- <div> -->
+			<input type="number" name="goal" id="goal" />
+			<button>Go!</button>
+			<!-- </div> -->
+		</div>
 		<!-- The DIV for a Diagram needs an explicit size or else we will not see anything.
      In this case we also add a background color so we can see that area. -->
 		<div
@@ -22,9 +30,23 @@
 			"
 		></div>
 	</body>
+	<!-- <script>
+		function getGoal() {
+			let userGoal = document.getElementById('goal').value;
+			console.log(userGoal);
+		}
+	</script> -->
 	<script type="module">
 		import BinarySearchTree from "./bst.js";
 		import BstToGo from "./helpers/bst_to_go.js";
+
+		let inputGoal = document.getElementById("goal");
+		inputGoal.onchange = handleChange;
+
+		var userGoal = 0;
+
+		
+
 		let tree = new BinarySearchTree();
 		tree.insert(9);
 		tree.insert(4, 7);
@@ -40,16 +62,22 @@
 		let toGo = new BstToGo(tree);
 		var $ = go.GraphObject.make;
 
+		function handleChange(e) {
+			userGoal = e.target.value;
+		
 		console.log("Setting timeout");
+		
 		setTimeout(() => {
+			
 			console.log("Running");
 			// let arr = [4,2,5];
 			// console.log(tree.iterativeDeepeningSearch(15, 0, 0));
 
 			// console.log(tree.depthFirstSearch(20));
-			let arr = tree.depthFirstSearch(15);
+			let arr = tree.uniformCostSearch(Number(userGoal));
 			toGo.startAnimation(arr);
 			renderAllFrames(toGo);
+			
 		}, 2000);
 
 		function renderAllFrames(animPlayer) {
@@ -100,6 +128,7 @@
 				part.elt(0).stroke = "darkgreen";
 			});
 		}
+	}
 
 		var myDiagram = $(go.Diagram, "myDiagramDiv", {
 			// enable Ctrl-Z to undo and Ctrl-Y to redo

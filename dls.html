@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Uninformed Search</title>
+
+		<script src="https://unpkg.com/gojs/release/go-debug.js"></script>
+	</head>
+
+	<body>
+		<div style="margin: 2rem auto; text-align: center">
+			<h1 style="margin-bottom: 2rem">Depth Limited Search</h1>
+			<h2>Enter Goal Node</h2>
+			<!-- <div> -->
+			<input type="number" name="goal" id="goal" />
+			<button>Go!</button>
+			<!-- </div> -->
+		</div>
+		<!-- The DIV for a Diagram needs an explicit size or else we will not see anything.
+     In this case we also add a background color so we can see that area. -->
+		<div
+			id="myDiagramDiv"
+			style="
+				width: 1200px;
+				height: 900px;
+				background-color: #dae4e4;
+				margin: 0 auto;
+			"
+		></div>
+	</body>
+	<!-- <script>
+		function getGoal() {
+			let userGoal = document.getElementById('goal').value;
+			console.log(userGoal);
+		}
+	</script> -->
+	<script type="module">
+		import BinarySearchTree from "./bst.js";
+		import BstToGo from "./helpers/bst_to_go.js";
+
+		let inputGoal = document.getElementById("goal");
+		inputGoal.onchange = handleChange;
+
+		var userGoal = 0;
+
+		let tree = new BinarySearchTree();
+		tree.insert(9);
+		tree.insert(4, 7);
+		tree.insert(20, 20);
+		tree.insert(170, 50);
+		tree.insert(6, 1);
+		tree.insert(1, 60);
+		tree.insert(15, 400);
+		// tree.insert(18, 40);
+		// tree.insert(3, 4);
+		// tree.insert(42, 14);
+		// tree.insert(65, 49);
+		let toGo = new BstToGo(tree);
+		var $ = go.GraphObject.make;
+
+		function handleChange(e) {
+			userGoal = e.target.value;
+
+			console.log("Setting timeout");
+
+			setTimeout(() => {
+				console.log("Running");
+				// let arr = [4,2,5];
+				// console.log(tree.iterativeDeepeningSearch(15, 0, 0));
+
+				// console.log(tree.depthFirstSearch(20));
+				let arr = tree.depthLimitedSearch(Number(userGoal), 1);
+				toGo.startAnimation(arr);
+				renderAllFrames(toGo);
+			}, 2000);
+
+			function renderAllFrames(animPlayer) {
+				let val = animPlayer.nextFrame();
+				console.log(val);
+				renderFrame(val);
+				if (!val.is_done) {
+					setTimeout(() => {
+						renderAllFrames(animPlayer);
+					}, 2000);
+				}
+			}
+
+			function renderFrame(frame) {
+				if (frame.last != null) {
+					setInActive(myDiagram, frame.last);
+				}
+				if (frame.is_done) {
+					setDone(myDiagram, frame.current);
+				} else {
+					setActive(myDiagram, frame.current);
+				}
+			}
+
+			function setActive(diagram, node_key) {
+				diagram.commit((diag) => {
+					let part = diag.findPartForKey(node_key);
+					part.elt(0).scale = 1;
+					part.elt(0).fill = "lightblue";
+					part.elt(0).stroke = "darkblue";
+				});
+			}
+
+			function setInActive(diagram, node_key) {
+				diagram.commit((diag) => {
+					let part = diag.findPartForKey(node_key);
+					part.elt(0).scale = 1;
+					part.elt(0).fill = "blue";
+					part.elt(0).stroke = "blue";
+				});
+			}
+
+			function setDone(diagram, node_key) {
+				diagram.commit((diag) => {
+					let part = diag.findPartForKey(node_key);
+					part.elt(0).scale = 1;
+					part.elt(0).fill = "lightgreen";
+					part.elt(0).stroke = "darkgreen";
+				});
+			}
+		}
+
+		var myDiagram = $(go.Diagram, "myDiagramDiv", {
+			// enable Ctrl-Z to undo and Ctrl-Y to redo
+			"undoManager.isEnabled": true,
+		});
+
+		myDiagram.model = new go.TreeModel(toGo.getGoTreeNodes());
+
+		myDiagram.nodeTemplate = $(
+			go.Node,
+			"Spot",
+			{ locationSpot: go.Spot.Center },
+			new go.Binding("text", "text"), // for sorting
+			$(
+				go.Shape,
+				"Ellipse",
+				{
+					fill: "blue", // the initial value, but data binding may provide different value
+					strokeWidth: 6,
+					stroke: "blue",
+					desiredSize: new go.Size(50, 50),
+				},
+				new go.Binding("desiredSize", "size"),
+				new go.Binding("fill", "fill"),
+				new go.AnimationTrigger("scale"),
+				new go.AnimationTrigger("fill"),
+				new go.AnimationTrigger("stroke")
+			),
+			$(
+				go.TextBlock,
+				{
+					stroke: "white",
+				},
+				new go.Binding("text", "key")
+			)
+		);
+
+		myDiagram.linkTemplate = $(
+			go.Link,
+			{
+				routing: go.Link.Orthogonal,
+				selectable: false,
+				corner: 5,
+			},
+			$(go.Shape, { strokeWidth: 3, stroke: "#333" })
+		);
+
+		myDiagram.layout = $(go.TreeLayout, { angle: 90, layerSpacing: 35 });
+
+		window.custom = false;
+
+		// This presumes the object to be animated is a label within a Link
+		myDiagram.animationManager.initialAnimationStyle =
+			go.AnimationManager.defineAnimationEffect(
+				"fraction",
+				function (
+					obj,
+					startValue,
+					endValue,
+					easing,
+					currentTime,
+					duration,
+					animation
+				) {
+					obj.segmentFraction = easing(
+						currentTime,
+						startValue,
+						endValue - startValue,
+						duration
+					);
+				}
+			);
+
+		//myDiagram.model = go.Model.fromJSON(myDiagram.model.toJSON());
+
+		function animateColorAndFraction() {
+			// create one Animation for each link, so that they have independent durations
+			myDiagram.links.each(function (node) {
+				var animation = new go.Animation();
+				animation.add(
+					node.elt(1),
+					"fill",
+					node.elt(0).fill,
+					go.Brush.randomColor()
+				);
+				animation.add(node.elt(1), "fraction", 0, 1);
+				animation.duration = 1000 + Math.random() * 2000;
+				animation.reversible = true; // Re-run backwards
+				animation.runCount = Infinity; // Animate forever
+				animation.start();
+			});
+		}
+	</script>
+</html>
