@@ -153,16 +153,18 @@ export default class BinarySearchTree {
 	}
 
 	depthFirstSearch(goal) {
-		let stack = [];
+		let stack = [], result = [];
 		stack.push(this.root);
 
 		//May need to change the output for the GUI
 		while (stack.length) {
 			for (let i = 0; i < stack.length; i++) {
 				let node = stack.pop();
+				result.push(node.value)
 
 				if (node.value === goal) {
-					return node;
+					return result
+					// return node;
 				}
 
 				if (node.right) {
@@ -235,7 +237,9 @@ export default class BinarySearchTree {
 	_iterativeDeepeningSearch(goal, limit, depth) {
 		let stack = [],
 			status = 0,
-			visited = {};
+			visited = {},
+			all = [],
+			allDepths = [depth];
 		// NEED TO RETURN TRAVERSED  PATH
 		stack.push(this.root);
 
@@ -249,8 +253,8 @@ export default class BinarySearchTree {
 
 					if (node.value === goal) {
 						status = 1;
-
-						// return visited;
+						console.log(allDepths);
+						return allVisited;
 
 						return node;
 					}
@@ -268,6 +272,8 @@ export default class BinarySearchTree {
 					if (node.right || node.left) {
 						depth += 1;
 					}
+					allDepths.push(depth);
+
 				}
 
 				visited[depth] = allVisited;
