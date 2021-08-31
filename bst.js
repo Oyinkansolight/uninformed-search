@@ -154,6 +154,9 @@ export default class BinarySearchTree {
 
 	depthFirstSearch(goal) {
 		let stack = [], result = [];
+
+		if (!this.root) return 'Tree Empty';
+		
 		stack.push(this.root);
 
 		//May need to change the output for the GUI
@@ -180,17 +183,17 @@ export default class BinarySearchTree {
 		return null;
 	}
 
-	depthFirstSearchInOrder() {
-		return traverseInOrder(this.root, []);
-	}
+	// depthFirstSearchInOrder() {
+	// 	return traverseInOrder(this.root, []);
+	// }
 
-	depthFirstSearchPreOrder(goal) {
-		return traversePreOrder(this.root, [], goal);
-	}
+	// depthFirstSearchPreOrder(goal) {
+	// 	return traversePreOrder(this.root, [], goal);
+	// }
 
-	depthFirstSearchPostOrder() {
-		return traversePostOrder(this.root, []);
-	}
+	// depthFirstSearchPostOrder() {
+	// 	return traversePostOrder(this.root, []);
+	// }
 
 	depthLimitedSearch(goal, limit) {
 		let stack = [],
@@ -259,17 +262,15 @@ export default class BinarySearchTree {
 						console.log(allDepths);
 						return allVisited;
 
-						return node;
+						// return node;
 					}
 
 					if (node.right) {
 						stack.push(node.right);
-						allVisited.push(node.right.value);
 					}
 
 					if (node.left) {
 						stack.push(node.left);
-						allVisited.push(node.left.value);
 					}
 
 					if (node.right || node.left) {
